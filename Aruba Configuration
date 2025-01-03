@@ -1,0 +1,145 @@
+##Rebooting the Switch##
+
+ArubaCoreL3-AOS-S# en
+ArubaCoreL3-AOS-S# erase all zeroize
+The system will be rebooted and all management module files except
+software images will be erased and zeroized. This will take up to 60
+minutes and the switch will not be usable during that time.
+Continue (y/n)?
+Device may be rebooted, do you want to continue [y/n]?  y
+Press 'Enter' and start XMODEM on your host...
+ArubaCoreL3-AOS-S# reboot
+ <cr>
+ArubaCoreL3-AOS-S# reboot
+ <cr>
+ArubaCoreL3-AOS-S# reboot
+This will reboot the system from the primary image.
+Continue (y/n)? y
+BfocR
+IF1D
+M433
+ROM information:
+   Build directory: /ws/swbuildm/lavarom_qaoff/rom/build/lavarom(swbuildm_lavarom_qaoff_rel_lavarom_s)
+   Build date:      Sep  2 2021
+   Build time:      23:19:57
+   Build version:   WC.16.01.0010
+   Build number:    11253
+ 
+ 
+ 
+Booting Primary Software Image...
+ 
+    -------------------------------------------------
+    Module          : MM
+    Device          : INITROM
+    Running Version : WC.16.01.0003*
+    Image Version   : WC.16.01.0002
+    Image Name      : WC_16_01_0002_lavirombase.dl
+    Image Date      : Mon Jun 13 16:20:19 2016
+    -------------------------------------------------
+ 
+Decompressing...done.
+
+##Assign VLANs and Hostname
+
+Aruba-2930F-24G-4SFPP# conf t
+Aruba-2930F-24G-4SFPP(config)# hostname SW1CORE
+
+SW1CORE(config)# vlan 10
+SW1CORE(vlan-10)# name Default
+SW1CORE(vlan-10)# vlan 20
+SW1CORE(vlan-20)# name MGMT
+SW1CORE(vlan-20)# vlan 30
+SW1CORE(vlan-30)# name SERVERS
+SW1CORE(vlan-30)# vlan 40
+SW1CORE(vlan-40)# name VOIP
+SW1CORE(vlan-40)# vlan 50
+SW1CORE(vlan-50)# name SURVEILLANCE
+SW1CORE(vlan-50)# vlan 60
+SW1CORE(vlan-60)# NAME AAD
+SW1CORE(vlan-60)# vlan 70
+SW1CORE(vlan-70)# name AID
+SW1CORE(vlan-70)# vlan 80
+SW1CORE(vlan-80)# name BTD
+SW1CORE(vlan-80)# vlan 90
+SW1CORE(vlan-90)# name BOD
+SW1CORE(vlan-90)# vlan 100
+SW1CORE(vlan-100)# name CSD
+SW1CORE(vlan-100)# vlan 110
+SW1CORE(vlan-110)# name CCI
+SW1CORE(vlan-110)# vlan 120
+SW1CORE(vlan-120)# name FIN
+SW1CORE(vlan-120)# vlan 130
+SW1CORE(vlan-130)# name HRA
+SW1CORE(vlan-130)# vlan 140
+SW1CORE(vlan-140)# name IAD
+SW1CORE(vlan-140)# vlan 150
+SW1CORE(vlan-150)# name MKT
+SW1CORE(vlan-150)# Vlan 160
+SW1CORE(vlan-160)# name OOP
+SW1CORE(vlan-160)# vlan 170
+SW1CORE(vlan-170)# name PDD
+SW1CORE(vlan-170)# vlan 180
+SW1CORE(vlan-180)# name SCMD
+SW1CORE(vlan-180)# vlan 190
+SW1CORE(vlan-190)# name SLS
+SW1CORE(vlan-190)# vlan 200
+SW1CORE(vlan-200)# name TCG
+SW1CORE(vlan-200)# vlan 410
+SW1CORE(vlan-410)# name GUEST
+SW1CORE(vlan-410)# vlan 420
+SW1CORE(vlan-420)# name AGENTS
+
+
+##Port Tagging and Untagging##
+
+SW1CORE(eth-24)# name **AADPDD_SWITCH1**
+SW1CORE(eth-24)# tagged vlan
+ VLAN-ID-LIST          Enter a list of VLAN identifiers or one VLAN identifier.
+SW1CORE(eth-24)# tagged vlan 10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,
+160,170,180,190,200,410,420
+SW1CORE(eth-24)# exit
+SW1CORE(config)# int 23
+SW1CORE(eth-23)# name **AADPDD_SWITCH2**
+SW1CORE(eth-23)# tagged vlan 10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,
+160,170,180,190,200,410,420
+SW1CORE(eth-23)# exit
+SW1CORE(config)# int 22
+SW1CORE(eth-22)# name **SCMD_SWITCH**
+SW1CORE(eth-22)# tagged vlan 20,50,180,190
+SW1CORE(eth-22)# exit
+SW1CORE(config)# int 21
+SW1CORE(eth-21)# name **BTD_SWITCH**
+SW1CORE(eth-21)# tagged vlan 20,80,150,420
+SW1CORE(eth-21)# exit
+SW1CORE(config)# int 20
+SW1CORE(eth-20)# name **SERVERFARM_SWITCH**
+SW1CORE(eth-20)# tagged vlan 20,30,50
+SW1CORE(eth-20)# sh int br
+ 
+SW1CORE(config)# sh run
+ 
+Running configuration:
+ 
+; JL253A Configuration Editor; Created on release #WC.16.11.0001
+; Ver #14:67.6f.f8.1d.9b.3f.bf.bb.ef.7c.59.fc.6b.fb.9f.fc.ff.ff.37.ef:44
+hostname "SW1CORE"
+module 1 type jl253a
+interface 20
+   name "**CS->ANNEX-AS**"
+   exit
+interface 21
+   name "**CS->SERVER-FARM**"
+   exit
+interface 22
+   name "**CS->MKTB-AS**"
+   exit
+interface 23
+   name "**CS->AADPDD-AS-2**"
+   exit
+interface 24
+   name "**CS->AADPDD-AS-1**"
+   exit
+interface 25
+   name "**UPLINK**"
+   exit
