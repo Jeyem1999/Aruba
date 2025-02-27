@@ -26,10 +26,13 @@ reload
 
 ##Verify VSF Stack
 
-show vsf
+show vsf -------> verify vsf status
 show vsh topology
 show log -r
 
 ##Additional HA Configuration
 
-vsf mad enable -------> to prevent split-brain scenarios, configure VSF MAD
+vsf mad enable -------> to prevent split-brain scenarios, configure VSF MAD (multi-active detection)
+interface 1/1/3 -------> to ensure redundant uplinks, configure LACP
+lacp active
+--repeat for other interfaces as needed
