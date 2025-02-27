@@ -1,0 +1,35 @@
+##Aruba Configuration for HA##
+
+##ensure both switches are in the same firmware version##
+##access console for both switches
+
+---------------------------------------------------------
+
+
+##Primary Switch
+configure terminal -------> enter config mode
+vsf enable domain 1 -------> enable VSF
+vsf member 1 link 1/1/1 (change according to the VSF port in the switch) -------> define vsf link
+vsf member 1 link 1/1/2 (change according to the VSF port in the switch) -------> define vsf link
+vsf member 1 priorirt 200
+write memory
+reload
+
+##Secondary Switch
+configure terminal
+vsf enable domain 1
+vsf member 2 link 1 1/1/1 (change according to the VSF port in the switch)
+vsf member 2 link 1 1/1/2 (change according to the VSF port in the switch)
+vsf member 2 priorirt 150
+write memory
+reload
+
+##Verify VSF Stack
+
+show vsf
+show vsh topology
+show log -r
+
+##Additional HA Configuration
+
+vsf mad enable -------> to prevent split-brain scenarios, configure VSF MAD
